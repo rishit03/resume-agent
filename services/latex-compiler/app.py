@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
-import tempfile, subprocess, pathlib
+import subprocess, tempfile, pathlib
 
 app = FastAPI()
 
@@ -8,7 +8,7 @@ app = FastAPI()
 def health():
     return {"ok": True}
 
-@app.post("/compile", response_class=Response)
+@app.post("/compile")
 def compile_pdf(payload: dict):
     latex = payload.get("latex")
     if not latex:

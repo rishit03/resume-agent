@@ -1,5 +1,6 @@
 FROM python:3.11-slim
 
+# Install TeX Live (essential packages for resumes)
 RUN apt-get update && apt-get install -y \
     texlive-latex-base \
     texlive-latex-recommended \
