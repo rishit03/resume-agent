@@ -21,7 +21,7 @@ def compile_pdf(payload: dict):
 
         try:
             subprocess.run(
-                ["tectonic", "main.tex"],
+                ["pdflatex", "-interaction=nonstopmode", "main.tex"],
                 cwd=tmpdir,
                 check=True,
                 timeout=30
