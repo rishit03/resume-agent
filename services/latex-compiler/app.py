@@ -4,6 +4,23 @@ import subprocess, tempfile, pathlib
 
 app = FastAPI()
 
+def get_pdf_pages(pdf_path: pathlib.Path) -> int:
+    # pdfinfo output includes: "Pages:          1"
+    out = subprocess.run(
+        ["pdfinfo", str(pdf_path)],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        timeout=10,
+    ).stdout
+
+    for line in out.splitlines():
+        if line.lower().startswith("pages:"):
+            return int(line.split(":")[1].strip())
+
+    raise RuntimeError("Could not parse page count from pdfinfo output")
+
 @app.get("/health")
 def health():
     return {"ok": True}
@@ -46,6 +63,10 @@ def compile_pdf(payload: dict):
         pdf_file = tmp_path / "main.pdf"
         if not pdf_file.exists():
             raise HTTPException(500, "PDF not generated")
+        
+        pages = get_pdf_pages(pdf_file)
+        if pages != 1:
+            raise HTTPException(400, f"PDF is {pages} pages (must be exactly 1).")
 
         return Response(
             content=pdf_file.read_bytes(),

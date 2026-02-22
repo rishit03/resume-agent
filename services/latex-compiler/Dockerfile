@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     texlive-fonts-recommended \
     texlive-fonts-extra \
     texlive-xetex \
+    poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
