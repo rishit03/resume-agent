@@ -38,15 +38,16 @@ def compile_pdf(payload: dict):
 
         try:
             # nonstopmode prevents interactive hang
-            subprocess.run(
-                ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "main.tex"],
-                cwd=tmpdir,
-                check=True,
-                timeout=45,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
+            for _ in range(2):
+                subprocess.run(
+                    ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", "main.tex"],
+                    cwd=tmpdir,
+                    check=True,
+                    timeout=45,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                )
         except subprocess.TimeoutExpired:
             raise HTTPException(504, "Compilation timeout")
         except subprocess.CalledProcessError as e:
